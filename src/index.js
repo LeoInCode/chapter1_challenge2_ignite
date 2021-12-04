@@ -15,7 +15,7 @@ function checksExistsUserAccount(request, response, next) {
   const user = users.find(value => value.username === username);
 
   if(!user) {
-    return response.status(404).json({ error: 'Username not found' })
+    return response.status(404).json({ error: 'Username not found' });
   }
 
   request.user = user;
@@ -23,7 +23,15 @@ function checksExistsUserAccount(request, response, next) {
 }
 
 function checksCreateTodosUserAvailability(request, response, next) {
-  // Complete aqui
+  const { user } = request;
+
+  if((!user.pro && user.todos.length >= 10)) {
+    return response.status(403).json({ error: 'More than permited' });
+  }
+
+  if((!user.pro && user.todos.length < 10) || user.pro) {
+    return next();
+  }
 }
 
 function checksTodoExists(request, response, next) {
